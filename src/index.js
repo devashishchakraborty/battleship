@@ -4,15 +4,16 @@ class Ship{
         this.timesHit = 0;
         this.sunk = this.isSunk();
     }
+
     hit(){
         this.timesHit += 1;
     }
+    
     isSunk(){
-        if (this.length === this.timesHit){
-            return true;
-        }
+        return this.length === this.timesHit;
     }
 }
+
 
 class Gameboard{
     constructor(){
@@ -49,17 +50,43 @@ class Gameboard{
         let [x, y] = coords;
         if(typeof this.board[x][y] != "string"){
             this.board[x][y].hit();
-            this.board[x][y] = "0"
+            this.board[x][y] = "O"
         } else {
-            this.board[x][y] = "x";
+            this.board[x][y] = "X";
         }
     }
+
     checkIfAllShipsSunk(){
         this.board.forEach(function(row){
-            this.row.forEach(function(cell){
+            row.forEach(function(cell){
                 if(typeof cell != "string") return false;
             })
         })
         return true;
+    }
+}
+
+
+class Player{
+    constructor(name){
+        this.name = name;
+        this.score = 0;
+        this.notShooted = this.totalCoords();
+    }
+
+    totalCoords(){
+        let notClicked = [];
+        for(let i = 0; i < 10; i++){
+            for(let j = 0; j < 10; j++){
+                notClicked.push([i,j]);
+            }
+        }
+        return notClicked;
+    }
+
+    removeShootedCoordinate(coord){
+        this.notShooted = this.notShooted.filter((c) =>{
+            return (c[0] !== coord[0]) && (c[1] !== coord[1]);
+        });
     }
 }
