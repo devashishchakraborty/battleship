@@ -1,0 +1,42 @@
+html, body{
+    height: 100%;
+    margin: 0;
+    --tea-green: #C9E4CA;
+    --cambridge-blue: #87BBA2;
+    --blue-munsell: #55828B;
+    --dark-slate-gray: #3B6064;
+    --charcoal: #364958;
+}
+
+.placeShips{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 16px;
+}
+
+.placeShips .title{
+    font-size: 1.6em;
+}
+
+.boardGrid{
+    display: grid;
+    height: 400px;
+    width: 400px;
+    background-color: #C9E4CA;
+    grid-template-columns: repeat(10, 1fr);
+    border-left: 1px solid var(--dark-slate-gray);
+    border-top: 1px solid var(--dark-slate-gray);
+}
+
+.boardGrid > div:hover{
+    background-color: var(--cambridge-blue);
+}
+
+.boardGrid > *{
+    border-right: 1px solid var(--dark-slate-gray);
+    border-bottom: 1px solid var(--dark-slate-gray);
+
+}
