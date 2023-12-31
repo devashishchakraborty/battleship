@@ -68,25 +68,48 @@ class Gameboard{
 
 
 class Player{
-    constructor(name){
-        this.name = name;
+    constructor(type){
+        this.type = type;
         this.score = 0;
         this.notShooted = this.totalCoords();
     }
 
     totalCoords(){
-        let notClicked = [];
+        let temp = [];
         for(let i = 0; i < 10; i++){
             for(let j = 0; j < 10; j++){
-                notClicked.push([i,j]);
+                temp.push([i,j]);
             }
         }
-        return notClicked;
+        return temp;
     }
 
-    removeShootedCoordinate(coord){
+    filterOutShootedCoordinate(coord){
         this.notShooted = this.notShooted.filter((c) =>{
             return (c[0] !== coord[0]) && (c[1] !== coord[1]);
         });
     }
+
+    // For Computer to pick a random coordinate to shoot
+    chooseRandomCoordinate(){
+        const randomCoordinate = this.notShooted[
+            Math.floor(Math.random() * this.notShooted.length)
+        ];
+        this.filterOutShootedCoordinate(randomCoordinate);
+    }
 }
+
+
+function createGrid(){
+    let boardGrid = document.querySelector(".boardGrid");
+    for(let i = 0; i < 10; i++){
+        for(let j = 0; j < 10; j++){
+            const gridItem = document.createElement("div");
+            gridItem.setAttribute("row", `${i}`);
+            gridItem.setAttribute("col", `${j}`)
+            boardGrid.appendChild(gridItem);
+        }
+    }
+}
+
+createGrid();
