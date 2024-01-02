@@ -8,7 +8,7 @@ html, body{
     --charcoal: #364958;
 }
 
-.placeShips{
+.shipPlacingArea{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,7 +17,7 @@ html, body{
     gap: 16px;
 }
 
-.placeShips .title{
+.shipPlacingArea .title{
     font-size: 1.6em;
 }
 
@@ -31,12 +31,36 @@ html, body{
     border-top: 1px solid var(--dark-slate-gray);
 }
 
-.boardGrid > div:hover{
+/* .boardGrid > div:hover{
     background-color: var(--cambridge-blue);
-}
+} */
 
 .boardGrid > *{
     border-right: 1px solid var(--dark-slate-gray);
     border-bottom: 1px solid var(--dark-slate-gray);
+}
 
+.shipPlacingArea .currentShip{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.currentShipIcon{
+    display: flex;
+    border: 1px solid var(--charcoal);
+}
+
+.currentShipIcon > div{
+    height: 30px;
+    width: 30px;
+    background-color: var(--cambridge-blue);
+}
+
+.currentShipIcon[orientation="horizontal"] > div + div{
+    border-left: 1px solid var(--charcoal);
+}
+
+.currentShipIcon[orientation="vertical"] > div + div{
+    border-top: 1px solid var(--charcoal);
 }
