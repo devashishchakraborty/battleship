@@ -100,16 +100,73 @@ class Player{
 }
 
 
-function createGrid(){
-    let boardGrid = document.querySelector(".boardGrid");
-    for(let i = 0; i < 10; i++){
-        for(let j = 0; j < 10; j++){
-            const gridItem = document.createElement("div");
-            gridItem.setAttribute("row", `${i}`);
-            gridItem.setAttribute("col", `${j}`)
-            boardGrid.appendChild(gridItem);
-        }
+class DOM{
+    constructor(){
+        this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
     }
+
+
+    createBoardGrid(shipPlacingGrid){
+        let boardGrid = shipPlacingGrid;
+        for(let i = 0; i < 10; i++){
+            for(let j = 0; j < 10; j++){
+                const gridItem = document.createElement("div");
+                gridItem.setAttribute("row", `${i}`);
+                gridItem.setAttribute("col", `${j}`)
+                boardGrid.appendChild(gridItem);
+            }
+        }
+        return boardGrid;
+    }
+
+
+    placeShips(){
+        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
+        const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
+        this.changeCurrentShipIconOrientation(currentShipIcon);
+        // Trying to create hover effect for 5 squares first
+        boardGridCells.forEach(function(gridCell){
+            const row = gridCell.getAttribute("row");
+            const col = gridCell.getAttribute("col");
+            const nextCells = [];
+
+            for(let i = 0; i < 5; i++){
+                if (true){
+                    nextCells.push(document.querySelector(
+                        `.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`
+                        ));
+                }
+                
+            }
+            
+            gridCell.addEventListener("mouseover", function(){
+                nextCells.forEach(function(cell){
+                    if (cell)   cell.style.backgroundColor = "var(--cambridge-blue)";
+                })
+            })
+            
+            gridCell.addEventListener("mouseout", function(){
+                nextCells.forEach(function(cell){
+                    if (cell)   cell.style.backgroundColor = "var(--tea-green)";
+    
+                })
+            })
+        })
+    }
+
+    changeCurrentShipIconOrientation(currentShipIcon){
+        currentShipIcon.addEventListener("click", function(event){
+            if (currentShipIcon.getAttribute("orientation") == "horizontal"){
+                currentShipIcon.style.flexDirection = "column";
+                currentShipIcon.setAttribute("orientation", "vertical");
+            } else {
+                currentShipIcon.style.flexDirection = "row";
+                currentShipIcon.setAttribute("orientation", "horizontal");
+            }
+        })
+    }
+
 }
 
-createGrid();
+const dom = new DOM();
+dom.placeShips();
