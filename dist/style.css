@@ -11,7 +11,7 @@ html, body{
 .shipPlacingArea{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    padding-top: 50px;
     align-items: center;
     height: 100%;
     gap: 16px;

@@ -121,41 +121,52 @@ class DOM{
 
 
     placeShips(){
+        
         const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
-        const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
+        this.updateHoverEffect(currentShipIcon.getAttribute("orientation"));
         this.changeCurrentShipIconOrientation(currentShipIcon);
-        // Trying to create hover effect for 5 squares first
-        boardGridCells.forEach(function(gridCell){
-            const row = gridCell.getAttribute("row");
-            const col = gridCell.getAttribute("col");
-            const nextCells = [];
+        
+    }
 
-            for(let i = 0; i < 5; i++){
-                if (true){
-                    nextCells.push(document.querySelector(
-                        `.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`
-                        ));
-                }
-                
-            }
-            
-            gridCell.addEventListener("mouseover", function(){
-                nextCells.forEach(function(cell){
-                    if (cell)   cell.style.backgroundColor = "var(--cambridge-blue)";
-                })
-            })
-            
-            gridCell.addEventListener("mouseout", function(){
-                nextCells.forEach(function(cell){
-                    if (cell)   cell.style.backgroundColor = "var(--tea-green)";
-    
-                })
-            })
+    updateHoverEffect(orientation){
+        const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
+        
+        boardGridCells.forEach((gridCell) => {
+            gridCell.addEventListener("mouseover", () => this.changeBackgroundColor(gridCell, orientation, "--cambridge-blue"));
+            gridCell.addEventListener("mouseout", () => this.changeBackgroundColor(gridCell, orientation, "--tea-green"));
+            // gridCell.addEventListener("click", () => {
+            //     if (+col + n - 1 <= 9)   changeBackgroundColor(hoveringCells, "--blue-munsell")
+            // });
         })
     }
 
+    
+    changeBackgroundColor(gridCell, orientation, color){
+        const row = gridCell.getAttribute("row");
+        const col = gridCell.getAttribute("col");
+        const hoveringCells = [];
+        let n = 5;
+
+        for(let i = 0; i < n; i++){
+            if (orientation === "horizontal"){
+                hoveringCells.push(document.querySelector(
+                    `.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`
+                ));
+            } else if (orientation === "vertical"){
+                hoveringCells.push(document.querySelector(
+                    `.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`
+                ));
+            }
+        }
+
+        hoveringCells.forEach(function(cell){
+            if (cell)   cell.style.backgroundColor = `var(${color})`;
+        })
+    }
+
+    
     changeCurrentShipIconOrientation(currentShipIcon){
-        currentShipIcon.addEventListener("click", function(event){
+        currentShipIcon.addEventListener("click", () => {
             if (currentShipIcon.getAttribute("orientation") == "horizontal"){
                 currentShipIcon.style.flexDirection = "column";
                 currentShipIcon.setAttribute("orientation", "vertical");
@@ -163,6 +174,7 @@ class DOM{
                 currentShipIcon.style.flexDirection = "row";
                 currentShipIcon.setAttribute("orientation", "horizontal");
             }
+            this.updateHoverEffect(currentShipIcon.getAttribute("orientation"));
         })
     }
 
