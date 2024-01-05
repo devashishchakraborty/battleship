@@ -121,19 +121,16 @@ class DOM{
 
 
     placeShips(){
-        
-        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
-        this.updateHoverEffect(currentShipIcon.getAttribute("orientation"));
-        this.changeCurrentShipIconOrientation(currentShipIcon);
-        
+        this.updateHoverEffect();
+        this.changeCurrentShipIconOrientation();
     }
 
-    updateHoverEffect(orientation){
+    updateHoverEffect(){
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
         
         boardGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", () => this.changeBackgroundColor(gridCell, orientation, "--cambridge-blue"));
-            gridCell.addEventListener("mouseout", () => this.changeBackgroundColor(gridCell, orientation, "--tea-green"));
+            gridCell.addEventListener("mouseover", () => this.changeBackgroundColor(gridCell, "--cambridge-blue"));
+            gridCell.addEventListener("mouseout", () => this.changeBackgroundColor(gridCell, "--tea-green"));
             // gridCell.addEventListener("click", () => {
             //     if (+col + n - 1 <= 9)   changeBackgroundColor(hoveringCells, "--blue-munsell")
             // });
@@ -141,7 +138,10 @@ class DOM{
     }
 
     
-    changeBackgroundColor(gridCell, orientation, color){
+    changeBackgroundColor(gridCell, color){
+        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
+        const orientation = currentShipIcon.getAttribute("orientation");
+
         const row = gridCell.getAttribute("row");
         const col = gridCell.getAttribute("col");
         const hoveringCells = [];
@@ -165,7 +165,8 @@ class DOM{
     }
 
     
-    changeCurrentShipIconOrientation(currentShipIcon){
+    changeCurrentShipIconOrientation(){
+        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
         currentShipIcon.addEventListener("click", () => {
             if (currentShipIcon.getAttribute("orientation") == "horizontal"){
                 currentShipIcon.style.flexDirection = "column";
@@ -174,7 +175,6 @@ class DOM{
                 currentShipIcon.style.flexDirection = "row";
                 currentShipIcon.setAttribute("orientation", "horizontal");
             }
-            this.updateHoverEffect(currentShipIcon.getAttribute("orientation"));
         })
     }
 
