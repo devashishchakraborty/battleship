@@ -141,11 +141,11 @@ class DOM{
 
         const row = gridCell.getAttribute("row");
         const col = gridCell.getAttribute("col");
-        let n = 5;
+        let length = this.currentShipIcon.querySelectorAll("div").length;
         let nextCells = [];
         let cellAvailability = true;
 
-        for(let i = 0; i < n; i++){
+        for(let i = 0; i < length; i++){
             if (orientation === "horizontal"){
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
                 nextCells.push(currentCell);
@@ -164,7 +164,10 @@ class DOM{
 
         if (cellAvailability){
             nextCells.forEach((cell) => {
-                if(event.type === "click") cell.setAttribute("shipPlaced", "true");
+                if(event.type === "click") {
+                    cell.setAttribute("shipPlaced", "true");
+                    this.changeCurrentShipIcon(3);
+                }
                 cell.setAttribute("event", event.type);
             })
         }
@@ -181,6 +184,15 @@ class DOM{
                 this.currentShipIcon.setAttribute("orientation", "horizontal");
             }
         })
+    }
+
+
+    changeCurrentShipIcon(length){
+        this.currentShipIcon.textContent = "";
+        for(let i = 0; i < length; i++){
+            const div = document.createElement("div");
+            this.currentShipIcon.appendChild(div);
+        }
     }
 
 }
