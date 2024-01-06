@@ -25,19 +25,29 @@ html, body{
     display: grid;
     height: 400px;
     width: 400px;
-    background-color: #C9E4CA;
     grid-template-columns: repeat(10, 1fr);
     border-left: 1px solid var(--dark-slate-gray);
     border-top: 1px solid var(--dark-slate-gray);
 }
 
-/* .boardGrid > div:hover{
-    background-color: var(--cambridge-blue);
-} */
+.shipPlacingArea{
+    .boardGrid > div,
+    .boardGrid > div[event="mouseout"]{
+    background-color: #C9E4CA;
+    }
 
-.boardGrid > *{
-    border-right: 1px solid var(--dark-slate-gray);
-    border-bottom: 1px solid var(--dark-slate-gray);
+    .boardGrid > div[event="mouseover"]{
+        background-color: var(--cambridge-blue);
+    }
+
+    .boardGrid > div[event="click"]{
+        background-color: var(--blue-munsell);
+    }
+
+    .boardGrid > *{
+        border-right: 1px solid var(--dark-slate-gray);
+        border-bottom: 1px solid var(--dark-slate-gray);
+    }
 }
 
 .shipPlacingArea .currentShip{
