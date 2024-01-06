@@ -103,6 +103,7 @@ class Player{
 class DOM{
     constructor(){
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
+        this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
     }
 
 
@@ -127,53 +128,57 @@ class DOM{
 
     updateHoverEffect(){
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
-        
         boardGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", () => this.changeBackgroundColor(gridCell, "--cambridge-blue"));
-            gridCell.addEventListener("mouseout", () => this.changeBackgroundColor(gridCell, "--tea-green"));
-            // gridCell.addEventListener("click", () => {
-            //     if (+col + n - 1 <= 9)   changeBackgroundColor(hoveringCells, "--blue-munsell")
-            // });
+            gridCell.addEventListener("mouseover", (e) => this.changeBackgroundColor(e, gridCell));
+            gridCell.addEventListener("click", (e) => this.changeBackgroundColor(e, gridCell));
+            gridCell.addEventListener("mouseout", (e) => this.changeBackgroundColor(e, gridCell));
         })
     }
 
     
-    changeBackgroundColor(gridCell, color){
-        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
-        const orientation = currentShipIcon.getAttribute("orientation");
+    changeBackgroundColor(event, gridCell){
+        const orientation = this.currentShipIcon.getAttribute("orientation");
 
         const row = gridCell.getAttribute("row");
         const col = gridCell.getAttribute("col");
-        const hoveringCells = [];
         let n = 5;
+        let nextCells = [];
+        let cellAvailability = true;
 
         for(let i = 0; i < n; i++){
             if (orientation === "horizontal"){
-                hoveringCells.push(document.querySelector(
-                    `.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`
-                ));
+                const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
+                nextCells.push(currentCell);
             } else if (orientation === "vertical"){
-                hoveringCells.push(document.querySelector(
-                    `.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`
-                ));
+                const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
+                nextCells.push(currentCell);
             }
         }
 
-        hoveringCells.forEach(function(cell){
-            if (cell)   cell.style.backgroundColor = `var(${color})`;
+        nextCells.forEach((cell) => {
+            if((!cell) || cell.getAttribute("shipPlaced") === "true"){
+                cellAvailability = false;
+                gridCell.style.cursor = "not-allowed";
+            }
         })
+
+        if (cellAvailability){
+            nextCells.forEach((cell) => {
+                if(event.type === "click") cell.setAttribute("shipPlaced", "true");
+                cell.setAttribute("event", event.type);
+            })
+        }
     }
 
     
     changeCurrentShipIconOrientation(){
-        const currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
-        currentShipIcon.addEventListener("click", () => {
-            if (currentShipIcon.getAttribute("orientation") == "horizontal"){
-                currentShipIcon.style.flexDirection = "column";
-                currentShipIcon.setAttribute("orientation", "vertical");
+        this.currentShipIcon.addEventListener("click", () => {
+            if (this.currentShipIcon.getAttribute("orientation") == "horizontal"){
+                this.currentShipIcon.style.flexDirection = "column";
+                this.currentShipIcon.setAttribute("orientation", "vertical");
             } else {
-                currentShipIcon.style.flexDirection = "row";
-                currentShipIcon.setAttribute("orientation", "horizontal");
+                this.currentShipIcon.style.flexDirection = "row";
+                this.currentShipIcon.setAttribute("orientation", "horizontal");
             }
         })
     }
