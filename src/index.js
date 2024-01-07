@@ -1,5 +1,6 @@
 class Ship{
-    constructor(length){
+    constructor(name, length){
+        this.name = name;
         this.length = length;
         this.timesHit = 0;
         this.sunk = this.isSunk();
@@ -12,16 +13,15 @@ class Ship{
     isSunk(){
         return this.length === this.timesHit;
     }
+
+    getLength(){
+        return this.length;
+    }
 }
 
 
 class Gameboard{
     constructor(){
-        this.carrier = new Ship(5);
-        this.battleship = new Ship(4);
-        this.destroyer = new Ship(3);
-        this.submarine = new Ship(3);
-        this.patrolBoat = new Ship(2);
         this.board = [
             ["","","","","","","","","",""],
             ["","","","","","","","","",""],
@@ -104,9 +104,19 @@ class DOM{
     constructor(){
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
         this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
+
+        // Ships which are to be placed in the board itself.
+        this.shipstoPlace = [
+            new Ship("carrier", 5),
+            new Ship("battleship", 4),
+            new Ship("destroyer", 3),
+            new Ship("submarine", 3),
+            new Ship("patrolBoat", 2)
+        ]
     }
 
 
+    // Creates a 10x10 grid
     createBoardGrid(shipPlacingGrid){
         let boardGrid = shipPlacingGrid;
         for(let i = 0; i < 10; i++){
@@ -128,23 +138,30 @@ class DOM{
 
     updateHoverEffect(){
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
+
+        // Event Listeners for each cell to check hover and click events
+        // and change Background colors accordingly.
         boardGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", (e) => this.changeBackgroundColor(e, gridCell));
-            gridCell.addEventListener("click", (e) => this.changeBackgroundColor(e, gridCell));
-            gridCell.addEventListener("mouseout", (e) => this.changeBackgroundColor(e, gridCell));
+                gridCell.addEventListener("mouseover", (e) => this.changeBackgroundColor(e, boardGridCells));
+                gridCell.addEventListener("click", (e) => this.changeBackgroundColor(e, boardGridCells));
+                gridCell.addEventListener("mouseout", (e) => this.changeBackgroundColor(e, boardGridCells));
         })
+
     }
 
     
-    changeBackgroundColor(event, gridCell){
+    changeBackgroundColor(event, boardGridCells){
         const orientation = this.currentShipIcon.getAttribute("orientation");
+        const currentGridCell = event.target;
+        const row = currentGridCell.getAttribute("row");
+        const col = currentGridCell.getAttribute("col");
 
-        const row = gridCell.getAttribute("row");
-        const col = gridCell.getAttribute("col");
-        let length = this.currentShipIcon.querySelectorAll("div").length;
         let nextCells = [];
         let cellAvailability = true;
+        let currentShip = this.shipstoPlace[0];
+        let length = currentShip.getLength();
 
+        // Creating an array of cells to be modified.
         for(let i = 0; i < length; i++){
             if (orientation === "horizontal"){
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
@@ -158,18 +175,36 @@ class DOM{
         nextCells.forEach((cell) => {
             if((!cell) || cell.getAttribute("shipPlaced") === "true"){
                 cellAvailability = false;
-                gridCell.style.cursor = "not-allowed";
+                currentGridCell.style.cursor = "not-allowed";
             }
         })
 
         if (cellAvailability){
             nextCells.forEach((cell) => {
-                if(event.type === "click") {
-                    cell.setAttribute("shipPlaced", "true");
-                    this.changeCurrentShipIcon(3);
-                }
                 cell.setAttribute("event", event.type);
             })
+
+            if(event.type === "click") {
+                nextCells.forEach((cell) => {
+                    cell.setAttribute("shipPlaced", "true");
+                });
+                this.shipstoPlace.shift();  // To get the next element at first index
+
+                
+                if(this.shipstoPlace[0]){
+                    // changes the ship icon according to the length of the ship to be placed.
+                    this.updateCurrentShipIcon(this.shipstoPlace[0].getLength());
+                } else {
+                    // Creates a clone of each cell and replaces with original one
+                    // to remove all the event Listeners from it
+                    // when no ships are left to be placed. 
+                    // (Thanks to ChatGPT for helping :p)
+                    boardGridCells.forEach((cell) => {
+                        let clone = cell.cloneNode(true);
+                        cell.parentNode.replaceChild(clone, cell);
+                    })
+                }
+            }
         }
     }
 
@@ -187,7 +222,7 @@ class DOM{
     }
 
 
-    changeCurrentShipIcon(length){
+    updateCurrentShipIcon(length){
         this.currentShipIcon.textContent = "";
         for(let i = 0; i < length; i++){
             const div = document.createElement("div");
