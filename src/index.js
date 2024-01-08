@@ -36,14 +36,16 @@ class Gameboard{
         ]
     }
 
+    getBoard(){
+        return this.board;
+    }
+
     //  headCoords is the coordinates of the head of the ship.
     //  orientation is either horizontal or vertical.
-    placeShip(ship, headCoords, orientation){
-        let [x, y] = headCoords;
-        for(let i = 0; i < ship.length; i++){
-            if(orientation === "horizontal")    this.board[x][y+i] = ship;
-            else if(orientation === "vertical") this.board[x+i][y] = ship;
-        }
+    placeShip(ship, coordinates){
+        coordinates.forEach(([row, col]) => {
+            this.board[row][col] = ship;
+        })
     }
 
     receiveAttack(coords){
@@ -74,6 +76,7 @@ class Player{
         this.notShooted = this.totalCoords();
     }
 
+
     totalCoords(){
         let temp = [];
         for(let i = 0; i < 10; i++){
@@ -84,11 +87,13 @@ class Player{
         return temp;
     }
 
+
     filterOutShootedCoordinate(coord){
         this.notShooted = this.notShooted.filter((c) =>{
             return (c[0] !== coord[0]) && (c[1] !== coord[1]);
         });
     }
+
 
     // For Computer to pick a random coordinate to shoot
     chooseRandomCoordinate(){
@@ -104,6 +109,7 @@ class DOM{
     constructor(){
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
         this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
+        this.playerGameBoard = new Gameboard()
 
         // Ships which are to be placed in the board itself.
         this.shipstoPlace = [
@@ -132,42 +138,46 @@ class DOM{
 
 
     placeShips(){
-        this.updateHoverEffect();
+        this.insertNewShips();
         this.changeCurrentShipIconOrientation();
     }
 
-    updateHoverEffect(){
+    insertNewShips(){
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
 
         // Event Listeners for each cell to check hover and click events
         // and change Background colors accordingly.
         boardGridCells.forEach((gridCell) => {
-                gridCell.addEventListener("mouseover", (e) => this.changeBackgroundColor(e, boardGridCells));
-                gridCell.addEventListener("click", (e) => this.changeBackgroundColor(e, boardGridCells));
-                gridCell.addEventListener("mouseout", (e) => this.changeBackgroundColor(e, boardGridCells));
+                gridCell.addEventListener("mouseover", (e) => this.shipPlacingHandler(e, boardGridCells));
+                gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
+                gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
         })
 
     }
 
     
-    changeBackgroundColor(event, boardGridCells){
+    shipPlacingHandler(event, boardGridCells){
         const orientation = this.currentShipIcon.getAttribute("orientation");
         const currentGridCell = event.target;
         const row = currentGridCell.getAttribute("row");
         const col = currentGridCell.getAttribute("col");
 
         let nextCells = [];
+        let coordinates = [];
         let cellAvailability = true;
         let currentShip = this.shipstoPlace[0];
         let length = currentShip.getLength();
 
         // Creating an array of cells to be modified.
+        // Also getting their coordinates in other array.
         for(let i = 0; i < length; i++){
             if (orientation === "horizontal"){
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
+                coordinates.push([row, +col + i]);
                 nextCells.push(currentCell);
             } else if (orientation === "vertical"){
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
+                coordinates.push([+row + i, col]);
                 nextCells.push(currentCell);
             }
         }
@@ -188,6 +198,8 @@ class DOM{
                 nextCells.forEach((cell) => {
                     cell.setAttribute("shipPlaced", "true");
                 });
+                this.playerGameBoard.placeShip(currentShip, coordinates);
+                console.log(this.playerGameBoard.getBoard());
                 this.shipstoPlace.shift();  // To get the next element at first index
 
                 
