@@ -8,17 +8,21 @@ html, body{
     --charcoal: #364958;
 }
 
+/* SHIP PLACING SECTION */
 .shipPlacingArea{
     display: flex;
     flex-direction: column;
     padding-top: 50px;
     align-items: center;
-    height: 100%;
-    gap: 16px;
+    gap: 32px;
 }
 
-.shipPlacingArea .title{
-    font-size: 1.6em;
+.title{
+    font-size: 2em;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--charcoal);
+    color: white;
 }
 
 .boardGrid{
@@ -50,10 +54,18 @@ html, body{
     }
 }
 
+.shipPlacingArea .carrierSelectionArea{
+    display: flex;
+    gap: 32px;
+}
+
 .shipPlacingArea .currentShip{
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 16px;
+    width: 200px;
 }
 
 .currentShipIcon{
@@ -73,4 +85,28 @@ html, body{
 
 .currentShipIcon[orientation="vertical"] > div + div{
     border-top: 1px solid var(--charcoal);
+}
+
+.startGameBtn{
+    background-color: var(--dark-slate-gray);
+    border-radius: 5px;
+    border: none;
+    height: 50px;
+    width: 150px;
+    color: white;
+    font-size: 1.4rem;
+}
+
+.startGameBtn:disabled{
+    background-color: var(--cambridge-blue);
+    cursor: not-allowed;
+}
+
+.startGameBtn:enabled:hover{
+    background-color: var(--charcoal);
+    cursor: pointer;
+}
+
+.startGameBtn:enabled:active{
+    background-color: var(--dark-slate-gray);
 }
