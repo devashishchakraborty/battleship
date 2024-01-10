@@ -125,11 +125,12 @@ class DOM{
     // Creates a 10x10 grid
     createBoardGrid(shipPlacingGrid){
         let boardGrid = shipPlacingGrid;
+        boardGrid.textContent = "";
         for(let i = 0; i < 10; i++){
             for(let j = 0; j < 10; j++){
                 const gridItem = document.createElement("div");
                 gridItem.setAttribute("row", `${i}`);
-                gridItem.setAttribute("col", `${j}`)
+                gridItem.setAttribute("col", `${j}`);
                 boardGrid.appendChild(gridItem);
             }
         }
@@ -138,11 +139,6 @@ class DOM{
 
 
     placeShips(){
-        this.insertNewShips();
-        this.changeCurrentShipIconOrientation();
-    }
-
-    insertNewShips(){
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
 
         // Event Listeners for each cell to check hover and click events
@@ -151,8 +147,9 @@ class DOM{
                 gridCell.addEventListener("mouseover", (e) => this.shipPlacingHandler(e, boardGridCells));
                 gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
                 gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
-        })
+        });
 
+        this.changeCurrentShipIconOrientation();
     }
 
     
@@ -215,6 +212,7 @@ class DOM{
                         let clone = cell.cloneNode(true);
                         cell.parentNode.replaceChild(clone, cell);
                     })
+                    this.activateStartGameButton();
                 }
             }
         }
@@ -242,6 +240,17 @@ class DOM{
         }
     }
 
+    activateStartGameButton(){
+        const shipPlacingArea = document.querySelector(".shipPlacingArea");
+        const startGameBtn = document.querySelector(".startGameBtn");
+        startGameBtn.removeAttribute("disabled");
+        startGameBtn.addEventListener("click", () => {
+            shipPlacingArea.style.display = "none";
+            this.startGame();
+        });
+    }
+
+    startGame(){}
 }
 
 const dom = new DOM();
