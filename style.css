@@ -58,7 +58,7 @@ main{
         background-color: var(--cambridge-blue);
     }
 
-    .boardGrid > div[shipPlaced="true"]{
+    .boardGrid > div[type="ship"]{
         background-color: var(--blue-munsell);
     }
 
@@ -170,6 +170,6 @@ main{
     }
 }
 
-.container .playerGrid > div[shipPlaced="true"]{
+.container .playerGrid > div[type="ship"]{
     background-color: var(--blue-munsell);
 }
