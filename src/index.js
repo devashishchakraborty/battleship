@@ -202,9 +202,12 @@ class DOM{
                 nextCells.forEach((cell) => {
                     cell.setAttribute("shipPlaced", "true");
                 });
+
+                // Placing Ship Object in the actual 10x10 Gameboard array.
                 this.playerGameboard.placeShip(currentShip, coordinates);
-                console.log(this.playerGameboard.getBoard());
-                this.shipstoPlace.shift();  // To get the next element at first index
+                
+                // Removing the first ship after being placed.
+                this.shipstoPlace.shift();
 
                 
                 if(this.shipstoPlace[0]){
@@ -216,9 +219,11 @@ class DOM{
                     // when no ships are left to be placed. 
                     // (Thanks to ChatGPT for helping :p)
                     boardGridCells.forEach((cell) => {
+                        cell.style.cursor = "default";
                         let clone = cell.cloneNode(true);
                         cell.parentNode.replaceChild(clone, cell);
                     })
+                    this.createMainGamePlayerGrid();    // To place ships on the Player Board
                     this.activateStartGameButton();
                 }
             }
@@ -257,7 +262,20 @@ class DOM{
         });
     }
 
+    createMainGamePlayerGrid(){
+        let playerGridCells = this.playerGrid.querySelectorAll("div");
+        let pBArr = this.playerGameboard.getBoard();
+        playerGridCells.forEach((cell)=>{
+            let row = cell.getAttribute("row");
+            let col = cell.getAttribute("col");
+            if(typeof pBArr[row][col] === "object"){
+                cell.setAttribute("shipPlaced", "true");
+            }
+        })
+    }
+
     startGame(){
+        
     }
 }
 
