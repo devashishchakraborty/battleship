@@ -17,7 +17,6 @@ header{
     padding: 20px;
     background-color: var(--charcoal);
     color: white;
-    width: 100%;
 }
 
 
@@ -59,7 +58,7 @@ main{
         background-color: var(--cambridge-blue);
     }
 
-    .boardGrid > div[event="click"]{
+    .boardGrid > div[shipPlaced="true"]{
         background-color: var(--blue-munsell);
     }
 
@@ -165,12 +164,12 @@ main{
         background-color: var(--cambridge-blue);
     }
 
-    div[event="click"]{
-        background-color: var(--blue-munsell);
-    }
-
     div{
         border-right: 1px solid var(--dark-slate-gray);
         border-bottom: 1px solid var(--dark-slate-gray);
     }
+}
+
+.container .playerGrid > div[shipPlaced="true"]{
+    background-color: var(--blue-munsell);
 }
