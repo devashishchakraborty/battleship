@@ -8,23 +8,37 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="title">Battleship</div>
-    <div class="shipPlacingArea">
-        <div class="carrierSelectionArea">
-            <div class="boardGrid"></div>
-            <div class="currentShip">
-                Place Your Carrier
-                <div class="currentShipIcon" orientation="horizontal">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+    <header>Battleship</header>
+    <main>
+        <div class="shipPlacingArea">
+            <div class="carrierSelectionArea">
+                <div class="boardGrid"></div>
+                <div class="currentShip">
+                    Place Your Carrier
+                    <div class="currentShipIcon" orientation="horizontal">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
+            <button class="startGameBtn" disabled>Start Game</button>
         </div>
-        <button class="startGameBtn" disabled>Start Game</button>
-    </div>
-    <!-- <div class="container"></div> -->
+        <div class="container">
+            <div>
+                <div class="gridDesc">Player's Board</div>
+                <div class="playerGrid"></div>
+            </div>
+            <div>
+                <div class="gridDesc">Opponent's Board</div>
+                <div class="opponentGrid"></div>
+            </div>
+            
+        </div>
+    </main>
+    
+    
 </body>
 </html>
