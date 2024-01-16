@@ -1,56 +1,56 @@
-class Ship{
-    constructor(name, length){
+class Ship {
+    constructor(name, length) {
         this.name = name;
         this.length = length;
         this.timesHit = 0;
         this.sunk = this.isSunk();
     }
 
-    hit(){
+    hit() {
         this.timesHit += 1;
     }
-    
-    isSunk(){
+
+    isSunk() {
         return this.length === this.timesHit;
     }
 
-    getLength(){
+    getLength() {
         return this.length;
     }
 }
 
 
-class Gameboard{
-    constructor(){
+class Gameboard {
+    constructor() {
         this.board = [
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
-            ["","","","","","","","","",""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", "", "", ""],
         ]
     }
 
-    getBoard(){
+    getBoard() {
         return this.board;
     }
 
     //  headCoords is the coordinates of the head of the ship.
     //  orientation is either horizontal or vertical.
-    placeShip(ship, coordinates){
+    placeShip(ship, coordinates) {
         coordinates.forEach(([row, col]) => {
             this.board[row][col] = ship;
         })
     }
 
-    receiveAttack(coords){
+    receiveAttack(coords) {
         let [x, y] = coords;
-        if(typeof this.board[x][y] != "string"){
+        if (typeof this.board[x][y] != "string") {
             this.board[x][y].hit();
             this.board[x][y] = "O"
         } else {
@@ -58,10 +58,10 @@ class Gameboard{
         }
     }
 
-    checkIfAllShipsSunk(){
-        this.board.forEach(function(row){
-            row.forEach(function(cell){
-                if(typeof cell != "string") return false;
+    checkIfAllShipsSunk() {
+        this.board.forEach(function (row) {
+            row.forEach(function (cell) {
+                if (typeof cell != "string") return false;
             })
         })
         return true;
@@ -69,34 +69,34 @@ class Gameboard{
 }
 
 
-class Player{
-    constructor(type){
+class Player {
+    constructor(type) {
         this.type = type;
         this.score = 0;
         this.notShooted = this.totalCoords();
     }
 
 
-    totalCoords(){
+    totalCoords() {
         let temp = [];
-        for(let i = 0; i < 10; i++){
-            for(let j = 0; j < 10; j++){
-                temp.push([i,j]);
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                temp.push([i, j]);
             }
         }
         return temp;
     }
 
 
-    filterOutShootedCoordinate(coord){
-        this.notShooted = this.notShooted.filter((c) =>{
+    filterOutShootedCoordinate(coord) {
+        this.notShooted = this.notShooted.filter((c) => {
             return (c[0] !== coord[0]) && (c[1] !== coord[1]);
         });
     }
 
 
     // For Computer to pick a random coordinate to shoot
-    chooseRandomCoordinate(){
+    chooseRandomCoordinate() {
         const randomCoordinate = this.notShooted[
             Math.floor(Math.random() * this.notShooted.length)
         ];
@@ -105,8 +105,8 @@ class Player{
 }
 
 
-class DOM{
-    constructor(){
+class DOM {
+    constructor() {
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
         this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
 
@@ -130,11 +130,11 @@ class DOM{
 
 
     // Creates a 10x10 grid
-    createBoardGrid(shipPlacingGrid){
+    createBoardGrid(shipPlacingGrid) {
         let boardGrid = shipPlacingGrid;
         boardGrid.textContent = "";
-        for(let i = 0; i < 10; i++){
-            for(let j = 0; j < 10; j++){
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
                 const gridItem = document.createElement("div");
                 gridItem.setAttribute("row", `${i}`);
                 gridItem.setAttribute("col", `${j}`);
@@ -145,28 +145,31 @@ class DOM{
     }
 
 
-    placeShips(){
+    placeShips() {
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
 
         // Event Listeners for each cell to check hover and click events
         // and change Background colors accordingly.
         boardGridCells.forEach((gridCell) => {
-                gridCell.addEventListener("mouseover", (e) => this.shipPlacingHandler(e, boardGridCells));
-                gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
-                gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
+            gridCell.addEventListener("mouseover", (e) => this.shipPlacingHandler(e, boardGridCells));
+            gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
+            gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
         });
 
         this.changeCurrentShipIconOrientation();
     }
 
-    
-    shipPlacingHandler(event, boardGridCells){
+
+    shipPlacingHandler(event, boardGridCells) {
         const orientation = this.currentShipIcon.getAttribute("orientation");
         const currentGridCell = event.target;
+        currentGridCell.parentElement.style.cursor = "default";
         const row = currentGridCell.getAttribute("row");
         const col = currentGridCell.getAttribute("col");
+        const gapCoords = [[-1,-1], [-1,1], [1,-1], [1,1], [0,-1], [-1,0], [0,1], [1,0]];
 
         let nextCells = [];
+        let shipGapCells = [];
         let coordinates = [];
         let cellAvailability = true;
         let currentShip = this.shipstoPlace[0];
@@ -174,43 +177,61 @@ class DOM{
 
         // Creating an array of cells to be modified.
         // Also getting their coordinates in other array.
-        for(let i = 0; i < length; i++){
-            if (orientation === "horizontal"){
+        for (let i = 0; i < length; i++) {
+            if (orientation === "horizontal") {
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
+
+                gapCoords.forEach((coord)=>{
+                    const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + coord[0]}"][col="${+col + i + coord[1]}"]`);
+                    shipGapCells.push(gapCell);
+                })
+
                 coordinates.push([row, +col + i]);
                 nextCells.push(currentCell);
-            } else if (orientation === "vertical"){
+
+            } else if (orientation === "vertical") {
                 const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
+                
+                gapCoords.forEach((coord)=>{
+                    const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i + coord[0]}"][col="${+col + coord[1]}"]`);
+                    shipGapCells.push(gapCell);
+                })
+                
                 coordinates.push([+row + i, col]);
                 nextCells.push(currentCell);
             }
         }
 
         nextCells.forEach((cell) => {
-            if((!cell) || cell.getAttribute("shipPlaced") === "true"){
+            if ((!cell) || cell.getAttribute("type") === "ship" || cell.getAttribute("type") === "gap") {
                 cellAvailability = false;
-                currentGridCell.style.cursor = "not-allowed";
+                currentGridCell.parentElement.style.cursor = "not-allowed";
             }
         })
 
-        if (cellAvailability){
+        if (cellAvailability) {
             nextCells.forEach((cell) => {
                 cell.setAttribute("event", event.type);
             })
 
-            if(event.type === "click") {
-                nextCells.forEach((cell) => {
-                    cell.setAttribute("shipPlaced", "true");
-                });
+            if (event.type === "click") {
+                nextCells.forEach((cell) => cell.setAttribute("type", "ship"));
+                console.log(shipGapCells);
+
+                shipGapCells.forEach((cell)=>{
+                    if(cell && cell.getAttribute("type") !== "ship"){
+                        cell.setAttribute("type", "gap");
+                    }
+                })
 
                 // Placing Ship Object in the actual 10x10 Gameboard array.
                 this.playerGameboard.placeShip(currentShip, coordinates);
-                
+
                 // Removing the first ship after being placed.
                 this.shipstoPlace.shift();
 
-                
-                if(this.shipstoPlace[0]){
+
+                if (this.shipstoPlace[0]) {
                     // changes the ship icon according to the length of the ship to be placed.
                     this.updateCurrentShipIcon(this.shipstoPlace[0].getLength());
                 } else {
@@ -230,10 +251,10 @@ class DOM{
         }
     }
 
-    
-    changeCurrentShipIconOrientation(){
+
+    changeCurrentShipIconOrientation() {
         this.currentShipIcon.addEventListener("click", () => {
-            if (this.currentShipIcon.getAttribute("orientation") == "horizontal"){
+            if (this.currentShipIcon.getAttribute("orientation") == "horizontal") {
                 this.currentShipIcon.style.flexDirection = "column";
                 this.currentShipIcon.setAttribute("orientation", "vertical");
             } else {
@@ -244,15 +265,15 @@ class DOM{
     }
 
 
-    updateCurrentShipIcon(length){
+    updateCurrentShipIcon(length) {
         this.currentShipIcon.textContent = "";
-        for(let i = 0; i < length; i++){
+        for (let i = 0; i < length; i++) {
             const div = document.createElement("div");
             this.currentShipIcon.appendChild(div);
         }
     }
 
-    activateStartGameButton(){
+    activateStartGameButton() {
         const shipPlacingArea = document.querySelector(".shipPlacingArea");
         const startGameBtn = document.querySelector(".startGameBtn");
         startGameBtn.removeAttribute("disabled");
@@ -262,20 +283,20 @@ class DOM{
         });
     }
 
-    createMainGamePlayerGrid(){
+    createMainGamePlayerGrid() {
         let playerGridCells = this.playerGrid.querySelectorAll("div");
         let pBArr = this.playerGameboard.getBoard();
-        playerGridCells.forEach((cell)=>{
+        playerGridCells.forEach((cell) => {
             let row = cell.getAttribute("row");
             let col = cell.getAttribute("col");
-            if(typeof pBArr[row][col] === "object"){
-                cell.setAttribute("shipPlaced", "true");
+            if (typeof pBArr[row][col] === "object") {
+                cell.setAttribute("type", "ship");
             }
         })
     }
 
-    startGame(){
-        
+    startGame() {
+
     }
 }
 
