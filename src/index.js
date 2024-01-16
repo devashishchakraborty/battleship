@@ -109,7 +109,14 @@ class DOM{
     constructor(){
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
         this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
-        this.playerGameBoard = new Gameboard()
+
+        // Visual grids on screen
+        this.playerGrid = this.createBoardGrid(document.querySelector(".container .playerGrid"));
+        this.opponentGrid = this.createBoardGrid(document.querySelector(".container .opponentGrid"));
+
+        // Gridboard objects
+        this.playerGameboard = new Gameboard();
+        this.opponentGameboard = new Gameboard(); // computer
 
         // Ships which are to be placed in the board itself.
         this.shipstoPlace = [
@@ -195,8 +202,8 @@ class DOM{
                 nextCells.forEach((cell) => {
                     cell.setAttribute("shipPlaced", "true");
                 });
-                this.playerGameBoard.placeShip(currentShip, coordinates);
-                console.log(this.playerGameBoard.getBoard());
+                this.playerGameboard.placeShip(currentShip, coordinates);
+                console.log(this.playerGameboard.getBoard());
                 this.shipstoPlace.shift();  // To get the next element at first index
 
                 
@@ -250,7 +257,8 @@ class DOM{
         });
     }
 
-    startGame(){}
+    startGame(){
+    }
 }
 
 const dom = new DOM();

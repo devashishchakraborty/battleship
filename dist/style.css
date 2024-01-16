@@ -1,11 +1,30 @@
 html, body{
     height: 100%;
     margin: 0;
+    flex-direction: column;
     --tea-green: #C9E4CA;
     --cambridge-blue: #87BBA2;
     --blue-munsell: #55828B;
     --dark-slate-gray: #3B6064;
     --charcoal: #364958;
+    box-sizing: border-box;
+}
+
+
+header{
+    font-size: 2em;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--charcoal);
+    color: white;
+    width: 100%;
+}
+
+
+main{
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 /* SHIP PLACING SECTION */
@@ -15,29 +34,25 @@ html, body{
     padding-top: 50px;
     align-items: center;
     gap: 32px;
-}
-
-.title{
-    font-size: 2em;
-    text-align: center;
-    padding: 20px;
-    background-color: var(--charcoal);
-    color: white;
-}
-
-.boardGrid{
-    display: grid;
-    height: 400px;
-    width: 400px;
-    grid-template-columns: repeat(10, 1fr);
-    border-left: 1px solid var(--dark-slate-gray);
-    border-top: 1px solid var(--dark-slate-gray);
+    position: absolute;
+    background-color: white;
+    flex: 1;
+    width: 100%;
 }
 
 .shipPlacingArea{
+    .boardGrid{
+        display: grid;
+        height: 400px;
+        width: 400px;
+        grid-template-columns: repeat(10, 1fr);
+        border-left: 1px solid var(--dark-slate-gray);
+        border-top: 1px solid var(--dark-slate-gray);
+    }
+
     .boardGrid > div,
     .boardGrid > div[event="mouseout"]{
-    background-color: #C9E4CA;
+    background-color: var(--tea-green);
     }
 
     .boardGrid > div[event="mouseover"]{
@@ -56,7 +71,7 @@ html, body{
 
 .shipPlacingArea .carrierSelectionArea{
     display: flex;
-    gap: 32px;
+    gap: 16px;
 }
 
 .shipPlacingArea .currentShip{
@@ -109,4 +124,53 @@ html, body{
 
 .startGameBtn:enabled:active{
     background-color: var(--dark-slate-gray);
+}
+
+/* MAIN GAME SECTION */
+.container{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.container > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.container .gridDesc{
+    font-size: 1.6rem;
+}
+
+
+.container .opponentGrid,
+.container .playerGrid{
+    display: grid;
+    height: 380px;
+    width: 380px;
+    grid-template-columns: repeat(10, 1fr);
+    border-left: 1px solid var(--dark-slate-gray);
+    border-top: 1px solid var(--dark-slate-gray);
+
+    div,
+    div[event="mouseout"]{
+    background-color: #C9E4CA;
+    }
+
+    div[event="mouseover"]{
+        background-color: var(--cambridge-blue);
+    }
+
+    div[event="click"]{
+        background-color: var(--blue-munsell);
+    }
+
+    div{
+        border-right: 1px solid var(--dark-slate-gray);
+        border-bottom: 1px solid var(--dark-slate-gray);
+    }
 }
