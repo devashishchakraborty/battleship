@@ -13,10 +13,6 @@ class Ship {
     isSunk() {
         return this.length === this.timesHit;
     }
-
-    getLength() {
-        return this.length;
-    }
 }
 
 
@@ -152,8 +148,8 @@ class DOM {
         // and change Background colors accordingly.
         boardGridCells.forEach((gridCell) => {
             gridCell.addEventListener("mouseover", (e) => this.shipPlacingHandler(e, boardGridCells));
-            gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
             gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
+            gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
         });
 
         this.changeCurrentShipIconOrientation();
@@ -173,33 +169,30 @@ class DOM {
         let coordinates = [];
         let cellAvailability = true;
         let currentShip = this.shipstoPlace[0];
-        let length = currentShip.getLength();
+        let length = currentShip.length;
 
         // Creating an array of cells to be modified.
         // Also getting their coordinates in other array.
         for (let i = 0; i < length; i++) {
+            let currentCell;
             if (orientation === "horizontal") {
-                const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
+                currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
 
                 gapCoords.forEach((coord)=>{
                     const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + coord[0]}"][col="${+col + i + coord[1]}"]`);
                     shipGapCells.push(gapCell);
                 })
 
-                coordinates.push([row, +col + i]);
-                nextCells.push(currentCell);
-
             } else if (orientation === "vertical") {
-                const currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
+                currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
                 
                 gapCoords.forEach((coord)=>{
                     const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i + coord[0]}"][col="${+col + coord[1]}"]`);
                     shipGapCells.push(gapCell);
                 })
-                
-                coordinates.push([+row + i, col]);
-                nextCells.push(currentCell);
             }
+            coordinates.push([row, +col + i]);
+            nextCells.push(currentCell);
         }
 
         nextCells.forEach((cell) => {
@@ -233,7 +226,7 @@ class DOM {
 
                 if (this.shipstoPlace[0]) {
                     // changes the ship icon according to the length of the ship to be placed.
-                    this.updateCurrentShipIcon(this.shipstoPlace[0].getLength());
+                    this.updateCurrentShipIcon(this.shipstoPlace[0].length);
                 } else {
                     // Creates a clone of each cell and replaces with original one
                     // to remove all the event Listeners from it
@@ -295,8 +288,20 @@ class DOM {
         })
     }
 
-    startGame() {
+    shootOpponentBoard(){
+        const opponentGridCells = this.opponentGrid.querySelectorAll("div");
+        opponentGridCells.forEach((gridCell) => {
+            gridCell.addEventListener("mouseover", (event) => {
+                event.target.setAttribute("event", event.type);
+            });
+            gridCell.addEventListener("mouseout", (event) => {
+                event.target.setAttribute("event", event.type);
+            });
+        })
+    }
 
+    startGame() {
+        this.shootOpponentBoard();
     }
 }
 
