@@ -1,4 +1,5 @@
-html, body{
+html,
+body {
     height: 100%;
     margin: 0;
     flex-direction: column;
@@ -11,7 +12,7 @@ html, body{
 }
 
 
-header{
+header {
     font-size: 2em;
     text-align: center;
     padding: 20px;
@@ -20,14 +21,14 @@ header{
 }
 
 
-main{
+main {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
 /* SHIP PLACING SECTION */
-.shipPlacingArea{
+.shipPlacingArea {
     display: flex;
     flex-direction: column;
     padding-top: 50px;
@@ -39,8 +40,8 @@ main{
     width: 100%;
 }
 
-.shipPlacingArea{
-    .boardGrid{
+.shipPlacingArea {
+    .boardGrid {
         display: grid;
         height: 400px;
         width: 400px;
@@ -49,31 +50,31 @@ main{
         border-top: 1px solid var(--dark-slate-gray);
     }
 
-    .boardGrid > div,
-    .boardGrid > div[event="mouseout"]{
-    background-color: var(--tea-green);
+    .boardGrid>div,
+    .boardGrid>div[event="mouseout"] {
+        background-color: var(--tea-green);
     }
 
-    .boardGrid > div[event="mouseover"]{
+    .boardGrid>div[event="mouseover"] {
         background-color: var(--cambridge-blue);
     }
 
-    .boardGrid > div[type="ship"]{
+    .boardGrid>div[type="ship"] {
         background-color: var(--blue-munsell);
     }
 
-    .boardGrid > *{
+    .boardGrid>* {
         border-right: 1px solid var(--dark-slate-gray);
         border-bottom: 1px solid var(--dark-slate-gray);
     }
 }
 
-.shipPlacingArea .carrierSelectionArea{
+.shipPlacingArea .carrierSelectionArea {
     display: flex;
     gap: 16px;
 }
 
-.shipPlacingArea .currentShip{
+.shipPlacingArea .currentShip {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -82,26 +83,26 @@ main{
     width: 200px;
 }
 
-.currentShipIcon{
+.currentShipIcon {
     display: flex;
     border: 1px solid var(--charcoal);
 }
 
-.currentShipIcon > div{
+.currentShipIcon>div {
     height: 30px;
     width: 30px;
     background-color: var(--cambridge-blue);
 }
 
-.currentShipIcon[orientation="horizontal"] > div + div{
+.currentShipIcon[orientation="horizontal"]>div+div {
     border-left: 1px solid var(--charcoal);
 }
 
-.currentShipIcon[orientation="vertical"] > div + div{
+.currentShipIcon[orientation="vertical"]>div+div {
     border-top: 1px solid var(--charcoal);
 }
 
-.startGameBtn{
+.startGameBtn {
     background-color: var(--dark-slate-gray);
     border-radius: 5px;
     border: none;
@@ -111,43 +112,43 @@ main{
     font-size: 1.4rem;
 }
 
-.startGameBtn:disabled{
+.startGameBtn:disabled {
     background-color: var(--cambridge-blue);
     cursor: not-allowed;
 }
 
-.startGameBtn:enabled:hover{
+.startGameBtn:enabled:hover {
     background-color: var(--charcoal);
     cursor: pointer;
 }
 
-.startGameBtn:enabled:active{
+.startGameBtn:enabled:active {
     background-color: var(--dark-slate-gray);
 }
 
 /* MAIN GAME SECTION */
-.container{
-    display: flex;
+main .container {
+    display: none;
     justify-content: space-evenly;
     align-items: center;
     gap: 16px;
     padding: 16px;
 }
 
-.container > div{
+.container>div {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
 }
 
-.container .gridDesc{
+.container .gridDesc {
     font-size: 1.6rem;
 }
 
 
 .container .opponentGrid,
-.container .playerGrid{
+.container .playerGrid {
     display: grid;
     height: 380px;
     width: 380px;
@@ -156,20 +157,21 @@ main{
     border-top: 1px solid var(--dark-slate-gray);
 
     div,
-    div[event="mouseout"]{
-    background-color: #C9E4CA;
-    }
-
-    div[event="mouseover"]{
-        background-color: var(--cambridge-blue);
-    }
-
-    div{
+    div[event="mouseout"] {
+        background-color: #C9E4CA;
         border-right: 1px solid var(--dark-slate-gray);
         border-bottom: 1px solid var(--dark-slate-gray);
     }
+
+    div[event="mouseover"] {
+        background-color: var(--cambridge-blue);
+    }
 }
 
-.container .playerGrid > div[type="ship"]{
+.container .playerGrid>div[type="ship"] {
     background-color: var(--blue-munsell);
+}
+
+.container .opponentGrid>div[type="ship"][shot="true"]{
+    background-color: red;
 }

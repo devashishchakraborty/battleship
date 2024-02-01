@@ -13,6 +13,10 @@ class Ship {
     isSunk() {
         return this.length === this.timesHit;
     }
+
+    getName() {
+        return this.name;
+    }
 }
 
 
@@ -44,14 +48,9 @@ class Gameboard {
         })
     }
 
-    receiveAttack(coords) {
-        let [x, y] = coords;
-        if (typeof this.board[x][y] != "string") {
-            this.board[x][y].hit();
-            this.board[x][y] = "O"
-        } else {
-            this.board[x][y] = "X";
-        }
+    receiveAttack([x, y]) {
+        let shipObj = this.board[x][y];
+        if (typeof shipObj === "object") shipObj.hit();
     }
 
     checkIfAllShipsSunk() {
@@ -69,11 +68,11 @@ class Gameboard {
         // Since I don't want to deal with overlaps ;-;
         // So it is somewhat random atleast in its own section.
         const ships = [
-            [new Ship("carrier", 5),    [[0, 0], [4, 4]]],
-            [new Ship("battleship", 4), [[0, 5], [4, 9]]],
-            [new Ship("destroyer", 3),  [[5, 0], [9, 3]]],
-            [new Ship("submarine", 3),  [[5, 4], [9, 7]]],
-            [new Ship("patrolBoat", 2), [[5, 8], [9, 9]]]
+            [new Ship("carrier", 5), [[0, 0], [4, 4]]],
+            [new Ship("battleship", 4), [[0, 6], [4, 9]]],
+            [new Ship("destroyer", 3), [[6, 0], [9, 2]]],
+            [new Ship("submarine", 3), [[6, 4], [9, 6]]],
+            [new Ship("patrolBoat", 2), [[6, 8], [9, 9]]]
         ]
 
         ships.forEach(([ship, [sectionStart, sectionEnd]]) => {
@@ -84,7 +83,7 @@ class Gameboard {
             if (orientation === 0) {  // Horizontal
                 let shipHeadRow = Math.floor(Math.random() * (endX - startX + 1)) + startX;
                 let shipHeadCol = Math.floor(Math.random() * (endY - startY + 1 - ship.length)) + startY;
-                for(let i = 0; i < ship.length; i++){
+                for (let i = 0; i < ship.length; i++) {
                     shipCoords.push([shipHeadRow, shipHeadCol + i])
                 }
             } else if (orientation === 1) {  // Vertical
@@ -178,7 +177,7 @@ class DOM {
     }
 
 
-    placeShips() {
+    shipPlacement() {
         const boardGridCells = this.shipPlacingGrid.querySelectorAll("div");
 
         // Event Listeners for each cell to check hover and click events
@@ -274,7 +273,6 @@ class DOM {
                         let clone = cell.cloneNode(true);
                         cell.parentNode.replaceChild(clone, cell);
                     })
-                    this.createMainGamePlayerGrid();    // To place ships on the Player Board
                     this.activateStartGameButton();
                 }
             }
@@ -306,37 +304,62 @@ class DOM {
     activateStartGameButton() {
         const shipPlacingArea = document.querySelector(".shipPlacingArea");
         const startGameBtn = document.querySelector(".startGameBtn");
+        const mainGameSection = document.querySelector("main .container");
         startGameBtn.removeAttribute("disabled");
         startGameBtn.addEventListener("click", () => {
             shipPlacingArea.style.display = "none";
-            this.opponentGameboard.randomlyPlaceShips();
-            console.log(this.opponentGameboard);
+            mainGameSection.style.display = "flex";
+
+            this.createMainGamePlayerGrid();    // To place ships on the Player Board
+            this.createMainGameOpponentGrid();  // To place ships on the Player Board
             this.startGame();
         });
     }
 
     createMainGamePlayerGrid() {
-        let playerGridCells = this.playerGrid.querySelectorAll("div");
-        let pBArr = this.playerGameboard.getBoard();
+        const playerGridCells = this.playerGrid.querySelectorAll("div");
+        const board = this.playerGameboard.getBoard();
         playerGridCells.forEach((cell) => {
             let row = cell.getAttribute("row");
             let col = cell.getAttribute("col");
-            if (typeof pBArr[row][col] === "object") {
+            let currentElement = board[row][col];
+            if (typeof currentElement === "object") {
                 cell.setAttribute("type", "ship");
+                cell.setAttribute("shipname", `${currentElement.getName()}`)
             }
         })
+    }
+
+    createMainGameOpponentGrid() {
+        this.opponentGameboard.randomlyPlaceShips();
+
+        const opponentGridCells = this.opponentGrid.querySelectorAll("div");
+        const board = this.opponentGameboard.getBoard();
+
+        opponentGridCells.forEach((cell) => {
+            let row = cell.getAttribute("row");
+            let col = cell.getAttribute("col");
+            let currentElement = board[row][col];
+            if (typeof currentElement === "object") {
+                cell.setAttribute("type", "ship");
+                cell.setAttribute("shipname", `${currentElement.getName()}`);
+            }
+        })
+        console.log(this.opponentGameboard);
     }
 
     shootOpponentBoard() {
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
         opponentGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", (event) => {
-                event.target.setAttribute("event", event.type);
-            });
-            gridCell.addEventListener("mouseout", (event) => {
-                event.target.setAttribute("event", event.type);
-            });
+            gridCell.addEventListener("mouseover", this.shootingHandler);
+            gridCell.addEventListener("mouseout", this.shootingHandler);
+            gridCell.addEventListener("click", this.shootingHandler)
         })
+    }
+
+    shootingHandler(event){
+        if(event.type === "click") event.target.setAttribute("shot", "true");
+        else event.target.setAttribute("event", event.type);
     }
 
     startGame() {
@@ -345,4 +368,4 @@ class DOM {
 }
 
 const dom = new DOM();
-dom.placeShips();
+dom.shipPlacement();
