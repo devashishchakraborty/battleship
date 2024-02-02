@@ -18,6 +18,7 @@ header {
     padding: 20px;
     background-color: var(--charcoal);
     color: white;
+    width: 100%;
 }
 
 
@@ -153,25 +154,34 @@ main .container {
     height: 380px;
     width: 380px;
     grid-template-columns: repeat(10, 1fr);
-    border-left: 1px solid var(--dark-slate-gray);
-    border-top: 1px solid var(--dark-slate-gray);
+    border-left: 1px solid var(--charcoal);
+    border-top: 1px solid var(--charcoal);
 
     div,
     div[event="mouseout"] {
         background-color: #C9E4CA;
-        border-right: 1px solid var(--dark-slate-gray);
-        border-bottom: 1px solid var(--dark-slate-gray);
+        border-right: 1px solid var(--charcoal);
+        border-bottom: 1px solid var(--charcoal);
     }
 
     div[event="mouseover"] {
         background-color: var(--cambridge-blue);
     }
+
+    div[type="ship"][shot="true"]{
+        background-color:crimson;
+    }
+
+    div[shot="true"]{
+        background-color: var(--blue-munsell);
+    }
+
 }
 
 .container .playerGrid>div[type="ship"] {
-    background-color: var(--blue-munsell);
+    background-color: var(--dark-slate-gray);
 }
 
-.container .opponentGrid>div[type="ship"][shot="true"]{
-    background-color: red;
+.container .opponentGrid div{
+    cursor: pointer;
 }
