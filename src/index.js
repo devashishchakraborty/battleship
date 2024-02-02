@@ -3,11 +3,12 @@ class Ship {
         this.name = name;
         this.length = length;
         this.timesHit = 0;
-        this.sunk = this.isSunk();
+        this.sunk = false;
     }
 
     hit() {
         this.timesHit += 1;
+        this.sunk = this.isSunk();
     }
 
     isSunk() {
@@ -310,13 +311,13 @@ class DOM {
             shipPlacingArea.style.display = "none";
             mainGameSection.style.display = "flex";
 
-            this.createMainGamePlayerGrid();    // To place ships on the Player Board
-            this.createMainGameOpponentGrid();  // To place ships on the Player Board
+            this.populateMainGamePlayerGrid();    // To place ships on the Player Board
+            this.populateMainGameOpponentGrid();  // To place ships on the Player Board
             this.startGame();
         });
     }
 
-    createMainGamePlayerGrid() {
+    populateMainGamePlayerGrid() {
         const playerGridCells = this.playerGrid.querySelectorAll("div");
         const board = this.playerGameboard.getBoard();
         playerGridCells.forEach((cell) => {
@@ -330,7 +331,7 @@ class DOM {
         })
     }
 
-    createMainGameOpponentGrid() {
+    populateMainGameOpponentGrid() {
         this.opponentGameboard.randomlyPlaceShips();
 
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
@@ -344,22 +345,37 @@ class DOM {
                 cell.setAttribute("type", "ship");
                 cell.setAttribute("shipname", `${currentElement.getName()}`);
             }
-        })
-        console.log(this.opponentGameboard);
+        });
     }
 
     shootOpponentBoard() {
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
         opponentGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", this.shootingHandler);
-            gridCell.addEventListener("mouseout", this.shootingHandler);
-            gridCell.addEventListener("click", this.shootingHandler)
+            gridCell.addEventListener("mouseover", (e) => this.playerShootingHandler(e));
+            gridCell.addEventListener("mouseout", (e) => this.playerShootingHandler(e));
+            gridCell.addEventListener("click", (e) => this.playerShootingHandler(e));
         })
     }
 
-    shootingHandler(event){
-        if(event.type === "click") event.target.setAttribute("shot", "true");
-        else event.target.setAttribute("event", event.type);
+    shootPlayerBoard() {
+
+    }
+
+    playerShootingHandler(event) {
+        if (!event.target.getAttribute("shot")) {
+            if (event.type === "click") {
+                event.target.setAttribute("shot", "true");
+                if (event.target.getAttribute("type") === "ship") {
+                    let row = event.target.getAttribute("row");
+                    let col = event.target.getAttribute("col");
+                    let board = this.opponentGameboard.getBoard();
+                    let ship = board[row][col];
+                    ship.hit();
+                    console.log(ship);
+                }
+            }
+            else event.target.setAttribute("event", event.type);
+        }
     }
 
     startGame() {
