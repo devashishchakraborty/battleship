@@ -3,12 +3,10 @@ class Ship {
         this.name = name;
         this.length = length;
         this.timesHit = 0;
-        this.sunk = false;
     }
 
     hit() {
         this.timesHit += 1;
-        this.sunk = this.isSunk();
     }
 
     isSunk() {
@@ -39,6 +37,12 @@ class Gameboard {
 
     getBoard() {
         return this.board;
+    }
+
+    isEmpty() {
+        return this.board.every((col) => {
+            return col.every((cell) => typeof cell === "string");
+        });
     }
 
     //  headCoords is the coordinates of the head of the ship.
@@ -149,7 +153,11 @@ class DOM {
 
         // Gridboard objects
         this.playerGameboard = new Gameboard();
-        this.opponentGameboard = new Gameboard(); // computer
+        this.opponentGameboard = new Gameboard(); // computer Board
+
+        // Players
+        this.player = new Player("human");
+        this.opponent = new Player("computer");
 
         // Ships which are to be placed in the board itself.
         this.shipstoPlace = [
@@ -351,17 +359,13 @@ class DOM {
     shootOpponentBoard() {
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
         opponentGridCells.forEach((gridCell) => {
-            gridCell.addEventListener("mouseover", (e) => this.playerShootingHandler(e));
-            gridCell.addEventListener("mouseout", (e) => this.playerShootingHandler(e));
-            gridCell.addEventListener("click", (e) => this.playerShootingHandler(e));
+            gridCell.addEventListener("mouseover", (e) => this.playerShootingHandler(e, opponentGridCells));
+            gridCell.addEventListener("mouseout", (e) => this.playerShootingHandler(e, opponentGridCells));
+            gridCell.addEventListener("click", (e) => this.playerShootingHandler(e, opponentGridCells));
         })
     }
 
-    shootPlayerBoard() {
-
-    }
-
-    playerShootingHandler(event) {
+    playerShootingHandler(event, opponentGridCells) {
         if (!event.target.getAttribute("shot")) {
             if (event.type === "click") {
                 event.target.setAttribute("shot", "true");
@@ -371,15 +375,42 @@ class DOM {
                     let board = this.opponentGameboard.getBoard();
                     let ship = board[row][col];
                     ship.hit();
-                    console.log(ship);
+
+                    // Removing the eventListeners after one hit
+                    opponentGridCells.forEach((cell) => {
+                        cell.style.cursor = "default";
+                        let clone = cell.cloneNode(true);
+                        cell.parentNode.replaceChild(clone, cell);
+                    })
                 }
             }
             else event.target.setAttribute("event", event.type);
         }
     }
 
+    shootPlayerBoard() {
+
+    }
+
     startGame() {
-        this.shootOpponentBoard();
+        let gameOver = false;
+        let currentPlayer = this.player;
+
+        while (!gameOver) {
+            if (currentPlayer === this.player) {
+                this.shootOpponentBoard();
+                currentPlayer = this.opponent;
+            } else if (currentPlayer === this.player) {
+                this.shootPlayerBoard();
+                currentPlayer = this.player;
+            }
+
+            // Close game if either of the boards don't have any ship left.
+            if (this.playerGameboard.isEmpty() || this.opponentGameboard.isEmpty()) {
+                gameOver = true;
+            }
+        }
+
     }
 }
 
