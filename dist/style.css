@@ -181,7 +181,3 @@ main .container {
 .container .playerGrid>div[type="ship"] {
     background-color: var(--dark-slate-gray);
 }
-
-.container .opponentGrid div{
-    cursor: pointer;
-}

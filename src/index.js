@@ -125,19 +125,12 @@ class Player {
     }
 
 
-    filterOutShootedCoordinate(coord) {
-        this.notShooted = this.notShooted.filter((c) => {
-            return (c[0] !== coord[0]) && (c[1] !== coord[1]);
-        });
-    }
-
-
     // For Computer to pick a random coordinate to shoot
     chooseRandomCoordinate() {
-        const randomCoordinate = this.notShooted[
-            Math.floor(Math.random() * this.notShooted.length)
-        ];
-        this.filterOutShootedCoordinate(randomCoordinate);
+        const index = Math.floor(Math.random() * this.notShooted.length);
+        const randomCoordinate = this.notShooted[index];
+        this.notShooted.splice(index, 1);
+        return randomCoordinate;
     }
 }
 
@@ -318,14 +311,11 @@ class DOM {
         startGameBtn.addEventListener("click", () => {
             shipPlacingArea.style.display = "none";
             mainGameSection.style.display = "flex";
-
-            this.populateMainGamePlayerGrid();    // To place ships on the Player Board
-            this.populateMainGameOpponentGrid();  // To place ships on the Player Board
-            this.startGame();
+            this.startMainGame();
         });
     }
 
-    populateMainGamePlayerGrid() {
+    populatePlayerGrid() {
         const playerGridCells = this.playerGrid.querySelectorAll("div");
         const board = this.playerGameboard.getBoard();
         playerGridCells.forEach((cell) => {
@@ -339,7 +329,7 @@ class DOM {
         })
     }
 
-    populateMainGameOpponentGrid() {
+    populateOpponentGrid() {
         this.opponentGameboard.randomlyPlaceShips();
 
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
@@ -362,13 +352,12 @@ class DOM {
             gridCell.addEventListener("mouseover", (e) => this.playerShootingHandler(e, opponentGridCells));
             gridCell.addEventListener("mouseout", (e) => this.playerShootingHandler(e, opponentGridCells));
             gridCell.addEventListener("click", (e) => this.playerShootingHandler(e, opponentGridCells));
-        })
+        });
     }
 
     playerShootingHandler(event, opponentGridCells) {
         if (!event.target.getAttribute("shot")) {
             if (event.type === "click") {
-                event.target.setAttribute("shot", "true");
                 if (event.target.getAttribute("type") === "ship") {
                     let row = event.target.getAttribute("row");
                     let col = event.target.getAttribute("col");
@@ -376,41 +365,34 @@ class DOM {
                     let ship = board[row][col];
                     ship.hit();
 
-                    // Removing the eventListeners after one hit
-                    opponentGridCells.forEach((cell) => {
-                        cell.style.cursor = "default";
-                        let clone = cell.cloneNode(true);
-                        cell.parentNode.replaceChild(clone, cell);
-                    })
                 }
+                event.target.setAttribute("shot", "true");
+                this.shootPlayerBoard();
             }
             else event.target.setAttribute("event", event.type);
         }
     }
 
     shootPlayerBoard() {
+        const playerGridCells = this.playerGrid.querySelectorAll("div");
+        const [x, y] = this.opponent.chooseRandomCoordinate();
+        const board = this.playerGameboard.getBoard();
 
+        playerGridCells.forEach((cell) => {
+            if (cell.getAttribute("row") === `${x}` && cell.getAttribute("col") === `${y}`) {
+                if (cell.getAttribute("type") === "ship") {
+                    board[x][y].hit();
+                }
+                cell.setAttribute("shot", "true");
+            }
+        })
+        this.shootOpponentBoard();
     }
 
-    startGame() {
-        let gameOver = false;
-        let currentPlayer = this.player;
-
-        while (!gameOver) {
-            if (currentPlayer === this.player) {
-                this.shootOpponentBoard();
-                currentPlayer = this.opponent;
-            } else if (currentPlayer === this.player) {
-                this.shootPlayerBoard();
-                currentPlayer = this.player;
-            }
-
-            // Close game if either of the boards don't have any ship left.
-            if (this.playerGameboard.isEmpty() || this.opponentGameboard.isEmpty()) {
-                gameOver = true;
-            }
-        }
-
+    startMainGame() {
+        this.populatePlayerGrid();    // To place ships on the Player Grid
+        this.populateOpponentGrid();  // To place ships on the Opponent Grid    
+        this.shootOpponentBoard();
     }
 }
 
