@@ -14,8 +14,11 @@ body {
 
 
 header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
     font-size: 2em;
-    text-align: center;
     padding: 20px;
     background-color: var(--charcoal);
     color: white;
