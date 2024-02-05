@@ -11,6 +11,7 @@
     <header>Battleship</header>
     <main>
         <div class="shipPlacingArea">
+            <div class="desc">Place Your Ships Here</div>
             <div class="carrierSelectionArea">
                 <div class="boardGrid"></div>
                 <div class="currentShip">
@@ -28,17 +29,21 @@
         </div>
         <div class="container">
             <div>
-                <div class="gridDesc">Player's Board</div>
+                <div class="gridDesc">Your Board</div>
                 <div class="playerGrid"></div>
+                <div class="opponentScore">Opponent's Score: 0</div>
             </div>
             <div>
-                <div class="gridDesc">Opponent's Board</div>
+                <div class="gridDesc">Opponent's Board, Shoot Here</div>
                 <div class="opponentGrid"></div>
+                <div class="playerScore">Your Score: 0</div>
             </div>
-            
         </div>
+        <div class="winningMessage"></div>
+        <button class="restartGameBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24"><path fill="currentColor" d="M18.258 3.508a.75.75 0 0 1 .463.693v4.243a.75.75 0 0 1-.75.75h-4.243a.75.75 0 0 1-.53-1.28L14.8 6.31a7.25 7.25 0 1 0 4.393 5.783a.75.75 0 0 1 1.488-.187A8.75 8.75 0 1 1 15.93 5.18l1.51-1.51a.75.75 0 0 1 .817-.162"/></svg>
+            <div>Restart Game</div>
+        </button>
     </main>
-    
-    
 </body>
 </html>
