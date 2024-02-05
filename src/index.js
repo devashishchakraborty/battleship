@@ -450,7 +450,11 @@ class DOM {
 
     restart(){
         this.shipPlacingGrid = this.createBoardGrid(document.querySelector(".shipPlacingArea .boardGrid"));
-        this.currentShipIcon = document.querySelector(".shipPlacingArea .currentShipIcon");
+        this.currentShipIcon.textContent = "";
+        for (let i = 0; i < 5; i++) {
+            const div = document.createElement("div");
+            this.currentShipIcon.appendChild(div);
+        }
 
         // Visual grids on screen
         this.playerGrid = this.createBoardGrid(document.querySelector(".container .playerGrid"));
