@@ -187,7 +187,9 @@ class DOM {
         startGameBtn.addEventListener("click", () => {
             shipPlacingArea.style.display = "none";
             mainGameSection.style.display = "flex";
-            this.startMainGame();
+            this.populatePlayerGrid();    // To place ships on the Player Grid
+            this.opponentGameboard.randomlyPlaceShips();
+            this.shootOpponentBoard();
         }, { once: true });
     }
 
@@ -207,24 +209,6 @@ class DOM {
     }
 
 
-    populateOpponentGrid() {
-        this.opponentGameboard.randomlyPlaceShips();
-
-        const opponentGridCells = this.opponentGrid.querySelectorAll("div");
-        const board = this.opponentGameboard.getBoard();
-
-        opponentGridCells.forEach((cell) => {
-            let row = cell.getAttribute("row");
-            let col = cell.getAttribute("col");
-            let currentElement = board[row][col];
-            if (typeof currentElement === "object") {
-                cell.setAttribute("type", "ship");
-                cell.setAttribute("shipname", `${currentElement.getName()}`);
-            }
-        });
-    }
-
-
     shootOpponentBoard() {
         const opponentGridCells = this.opponentGrid.querySelectorAll("div");
         opponentGridCells.forEach((gridCell) => {
@@ -236,12 +220,17 @@ class DOM {
 
 
     playerShootingHandler(event) {
+        const board = this.opponentGameboard.getBoard();
+
         if (!event.target.getAttribute("shot")) {
             if (event.type === "click") {
                 event.target.setAttribute("shot", "true");
-                if (event.target.getAttribute("type") === "ship") {
-                    let row = event.target.getAttribute("row");
-                    let col = event.target.getAttribute("col");
+                let row = event.target.getAttribute("row");
+                let col = event.target.getAttribute("col");
+                let currentElement = board[row][col];
+                if(typeof currentElement === "object"){
+                    event.target.setAttribute("type", "ship");
+                    event.target.setAttribute("shipname", `${currentElement.getName()}`);
                     this.updateScore(this.opponentGameboard, this.player, this.playerScore, [row, col]);
                 }
                 this.shootPlayerBoard();
@@ -345,13 +334,6 @@ class DOM {
             new Ship("submarine", 3),
             new Ship("patrolBoat", 2)
         ]
-    }
-
-
-    startMainGame() {
-        this.populatePlayerGrid();    // To place ships on the Player Grid
-        this.populateOpponentGrid();  // To place ships on the Opponent Grid    
-        this.shootOpponentBoard();
     }
 }
 
