@@ -10,7 +10,6 @@
 
 
 ## What I learned
-- Testing using Jest
 - Webpack
 - JS Modules
 - Went deeper into Object Orientation and DOM manipulation
