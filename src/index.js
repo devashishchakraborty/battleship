@@ -64,8 +64,16 @@ class DOM {
             gridCell.addEventListener("mouseout", (e) => this.shipPlacingHandler(e, boardGridCells));
             gridCell.addEventListener("click", (e) => this.shipPlacingHandler(e, boardGridCells));
         });
+        this.currentShipIcon.addEventListener("click", this.orientationHandler);
+    }
 
-        this.changeCurrentShipIconOrientation();
+    orientationHandler(e) {
+        let icon = e.target.parentElement;
+        if (icon.getAttribute("orientation") == "horizontal") {
+            icon.setAttribute("orientation", "vertical");
+        } else {
+            icon.setAttribute("orientation", "horizontal");
+        }
     }
 
 
@@ -90,6 +98,7 @@ class DOM {
             let currentCell;
             if (orientation === "horizontal") {
                 currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${row}"][col="${+col + i}"]`);
+                coordinates.push([row, +col + i]);
 
                 gapCoords.forEach((coord) => {
                     const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + coord[0]}"][col="${+col + i + coord[1]}"]`);
@@ -98,13 +107,13 @@ class DOM {
 
             } else if (orientation === "vertical") {
                 currentCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i}"][col="${col}"]`);
+                coordinates.push([+row + i, col]);
 
                 gapCoords.forEach((coord) => {
                     const gapCell = document.querySelector(`.shipPlacingArea .boardGrid div[row="${+row + i + coord[0]}"][col="${+col + coord[1]}"]`);
                     shipGapCells.push(gapCell);
                 })
             }
-            coordinates.push([row, +col + i]);
             nextCells.push(currentCell);
         }
 
@@ -154,19 +163,6 @@ class DOM {
                 }
             }
         }
-    }
-
-
-    changeCurrentShipIconOrientation() {
-        this.currentShipIcon.addEventListener("click", () => {
-            if (this.currentShipIcon.getAttribute("orientation") == "horizontal") {
-                this.currentShipIcon.style.flexDirection = "column";
-                this.currentShipIcon.setAttribute("orientation", "vertical");
-            } else {
-                this.currentShipIcon.style.flexDirection = "row";
-                this.currentShipIcon.setAttribute("orientation", "horizontal");
-            }
-        })
     }
 
 
@@ -295,7 +291,6 @@ class DOM {
             restartGameBtn.style.display = "none";
             startGameBtn.disabled = "true";
             this.restart();
-            this.shipPlacement();
         });
     }
 
@@ -334,6 +329,8 @@ class DOM {
             new Ship("submarine", 3),
             new Ship("patrolBoat", 2)
         ]
+
+        this.shipPlacement();
     }
 }
 

@@ -103,6 +103,14 @@ main {
     border: 1px solid var(--charcoal);
 }
 
+.currentShipIcon[orientation="horizontal"]{
+    flex-direction: row;
+}
+
+.currentShipIcon[orientation="vertical"]{
+    flex-direction: column;
+}
+
 .currentShipIcon>div {
     height: 30px;
     width: 30px;
