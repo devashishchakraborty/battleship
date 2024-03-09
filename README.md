@@ -2,7 +2,7 @@
 
 ## About
 - Battleship Game Project using HTML, CSS and Vanilla Javascript.
-- Live Preview -> [Here](https://devashishchakra.github.io/battleship)
+- Live Preview -> [Here](https://devashishchakraborty.github.io/battleship)
 
 ## Screenshots
 ![image](https://github.com/devashishchakraborty/battleship/assets/49796291/33a5aef5-b88c-42b4-ac3f-38b6f60c5b63)
